@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
-using KSP.Localization;
 
 namespace Nereid
 {
@@ -523,7 +522,7 @@ namespace Nereid
                }
                else if(vessel!=null)
                {
-                  location = Localizer.Format(vessel.mainBody.GetDisplayName());
+                  location = vessel.mainBody.GetName();
                }
                else
                {
