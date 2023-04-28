@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using KSP.Localization;
 
 namespace Nereid
 {
@@ -18,10 +19,12 @@ namespace Nereid
          private static readonly GUIStyle STYLE_NAME = new GUIStyle(HighLogic.Skin.label);
 
          private List<Pair<String, String>> codes = new List<Pair<String, String>>();
+            private static string str_title = Localizer.GetStringByTag("#FinalFrontier_CodesBrowser_title");
+            private static string str_Close = Localizer.GetStringByTag("#FinalFrontier_Close");
 
 
          public CodeBrowser()
-            : base(Constants.WINDOW_ID_CODEBROWSER, "Ribbon Codes")
+            : base(Constants.WINDOW_ID_CODEBROWSER, str_title) // "Ribbon Codes"
          {
             STYLE_CODE.stretchWidth = false;
             STYLE_CODE.fixedWidth = 100;
@@ -51,14 +54,15 @@ namespace Nereid
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace(); 
-            if (GUILayout.Button("Close", FFStyles.STYLE_BUTTON)) SetVisible(false);
+            if (GUILayout.Button(str_Close, FFStyles.STYLE_BUTTON)) SetVisible(false); // "Close"
             GUILayout.EndHorizontal();
             scrollPosition = GUILayout.BeginScrollView(scrollPosition, FFStyles.STYLE_SCROLLVIEW, GUILayout.Height(HEIGHT));
             GUILayout.BeginVertical();
+            string code, name;
             foreach (Pair<String, String> entry in codes)
             {
-               String code = entry.first;
-               String name = entry.second;
+               code = entry.first;
+               name = entry.second;
                GUILayout.BeginHorizontal();
                GUILayout.Label(code, STYLE_CODE);
                GUILayout.Label(name, STYLE_NAME);

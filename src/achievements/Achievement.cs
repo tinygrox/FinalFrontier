@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Contracts;
+using KSP.Localization;
 
 namespace Nereid
 {
-   namespace FinalFrontier
-   {
+    namespace FinalFrontier
+    {
       public abstract class Achievement : Activity, IComparable<Achievement>
       {
+            private static string firstTime = Localizer.Format("#FinalFrontier_Achievement_FirstTime");
+            private static string firstKerbal = Localizer.Format("#FinalFrontier_Achievement_FirstKerbal");
          private bool first;
          public int prestige { get; private set; }
 
          protected Achievement(String code, String name, int prestige, bool first)
-            : base(code, (first ? "First " : "") + name)
+            : base(code, (first ? firstTime + " " : "") + name) // "First "
          {
             this.first = first;
             this.prestige = prestige;
@@ -146,7 +149,7 @@ namespace Nereid
          // output line in logbook
          public override String CreateLogBookEntry(LogbookEntry entry)
          {
-            return GetName() + " ribbon is awarded to " + entry.Name;
+            return Localizer.Format("#FinalFrontier_Achievement_FirstTimeBookEntry", GetName(), entry.Name); // GetName() + " ribbon is awarded to " + entry.Name
          }
 
          public bool HasToBeFirst()
@@ -156,7 +159,7 @@ namespace Nereid
 
          protected String FirstKerbalText()
          {
-            return first ? "being first kerbal" : "";
+            return first ? firstKerbal : ""; // "being first kerbal"
          }
 
          public int CompareTo(Achievement right)
@@ -183,8 +186,10 @@ namespace Nereid
 
       class DangerousEvaAchievement : Achievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_DangerousEVA");
+            private static string achievement_desc = Localizer.Format("#FinalFrontier_Achievement_DangerousEVA_desc");
          public DangerousEvaAchievement(int prestige)
-            : base("DE", "Dangerous EVA", prestige, false)
+            : base("DE", achievement_name, prestige, false) // "Dangerous EVA"
          {
          }
 
@@ -214,14 +219,16 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for executing EVA while not in a stable orbit";
+            return achievement_desc; // "Awarded for executing EVA while not in a stable orbit"
          }
       }
 
       class SplashdownAchievement : Achievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_Splashdown");
+            private static string achievement_desc = Localizer.Format("#FinalFrontier_Achievement_Splashdown_desc");
          public SplashdownAchievement(int prestige)
-            : base("W", "Splashdown", prestige, false)
+            : base("W", achievement_name, prestige, false) // "Splashdown"
          {
          }
 
@@ -238,16 +245,19 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for a splashdown of a vessel in water";
+            return achievement_desc; // "Awarded for a splashdown of a vessel in water"
          }
       }
 
 
       class FastOrbitAchievement : NumericAchievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_FastOrbit");
+            private static string achievement_desc;
          public FastOrbitAchievement(int secondsToOrbit, int prestige)
-            : base("FO:", "Fast Orbit", secondsToOrbit, prestige, false)
+            : base("FO:", achievement_name, secondsToOrbit, prestige, false) // "Fast Orbit"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_FastOrbit_desc", value);
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -272,15 +282,18 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for less than " + value + " seconds into orbit";
+            return achievement_desc; // "Awarded for less than " + value + " seconds into orbit"
          }
       }
 
       class MissionTimeAchievement : NumericAchievement
       {
+         private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_MissionTime");
+            private static string achievement_desc;
          public MissionTimeAchievement(int durationInSeconds, int prestige)
-            : base("MT:", "Mission Time", durationInSeconds, prestige, false)
+            : base("MT:", achievement_name, durationInSeconds, prestige, false) // "Mission Time"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_MissionTime_desc", Utils.GameTimeInDays(value) + (GameUtils.IsKerbinTimeEnabled() ? " kerbin" : ""));
          }
 
          protected override bool CheckEntry(HallOfFameEntry entry)
@@ -290,15 +303,18 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for more than " + Utils.GameTimeInDays(value) + (GameUtils.IsKerbinTimeEnabled()?" kerbin":"")+" days spent in missions";
+            return achievement_desc; // "Awarded for more than " + Utils.GameTimeInDays(value) + (GameUtils.IsKerbinTimeEnabled()?" kerbin":"")+" days spent in missions"
          }
       }
 
       class SingleMissionTimeAchievement : NumericAchievement
       {
+         private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_Endurance");
+         private static string achievement_desc;
          public SingleMissionTimeAchievement(int durationInSeconds, int prestige)
-            : base("ME:", "Endurance", durationInSeconds, prestige, false)
+            : base("ME:", achievement_name, durationInSeconds, prestige, false) // "Endurance"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_Endurance_desc", Utils.GameTimeInDays(value) + (GameUtils.IsKerbinTimeEnabled() ? " kerbin" : ""));
          }
 
          protected override bool CheckEntry(HallOfFameEntry entry)
@@ -317,15 +333,18 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for more than " + Utils.GameTimeInDays(value) + (GameUtils.IsKerbinTimeEnabled() ? " kerbin" : "") + " days spent in a single mission and returnig safely";
+            return achievement_desc; // "Awarded for more than " + Utils.GameTimeInDays(value) + (GameUtils.IsKerbinTimeEnabled() ? " kerbin" : "") + " days spent in a single mission and returnig safely"
          }
       }
 
       class EvaTimeAchievement : NumericAchievement
       {
+         private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_EVAEndurance");
+         private static string achievement_desc;
          public EvaTimeAchievement(int durationInSeconds, int prestige)
-            : base("EM:", "EVA Endurance", durationInSeconds, prestige, false)
+            : base("EM:", achievement_name, durationInSeconds, prestige, false) // "EVA Endurance"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_EVAEndurance_desc", Utils.GameTimeAsString(value));
          }
 
          protected override bool CheckEntry(HallOfFameEntry entry)
@@ -338,33 +357,38 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for continuously spending " + Utils.GameTimeAsString(value) + " in EVA";
+             return achievement_desc; // "Awarded for continuously spending " + Utils.GameTimeAsString(value) + " in EVA"
          }
       }
 
       class EvaTotalTimeAchievement : NumericAchievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_EVATime");
+            private static string achievement_desc;
          public EvaTotalTimeAchievement(int durationInSeconds, int prestige)
-            : base("ET:", "EVA Time", durationInSeconds, prestige, false)
+            : base("ET:", achievement_name, durationInSeconds, prestige, false) // "EVA Time"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_EVATime_desc", Utils.GameTimeAsString(value));
          }
 
          protected override bool CheckEntry(HallOfFameEntry entry)
          {
             return entry.TotalEvaTime > value;
          }
-
-         public override String GetDescription()
-         {
-            return "Awarded for more than " + Utils.GameTimeAsString(value) + " spent in EVA";
-         }
+            public override String GetDescription()
+            {
+                return achievement_desc; // "Awarded for more than " + Utils.GameTimeAsString(value) + " spent in EVA"
+            }
       }
 
       class MissionsFlownAchievement : NumericAchievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_MultipleMissions");
+            private static string achievement_desc;
          public MissionsFlownAchievement(int missionsFlown, int prestige)
-            : base("M:", "Multiple Missions", missionsFlown, prestige, false)
+            : base("M:", achievement_name, missionsFlown, prestige, false) // "Multiple Missions"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_MultipleMissions_desc", value);
          }
 
          protected override bool CheckEntry(HallOfFameEntry entry)
@@ -374,15 +398,18 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for " + value + " or more missions";
+                return achievement_desc; // "Awarded for " + value + " or more missions"
          }
       }
 
       class HeavyVehicleAchievement : NumericAchievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_HeavyVehicle");
+            private static string achievement_desc;
          public HeavyVehicleAchievement(int mass, int prestige)
-            : base("H:", "Heavy Vehicle", mass, prestige, false)
+            : base("H:", achievement_name, mass, prestige, false) // "Heavy Vehicle"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_HeavyVehicle_desc", value);
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -398,15 +425,18 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded to every crew member of a vehicle with a total mass of " + value + "t or more";
+                return achievement_desc; // "Awarded to every crew member of a vehicle with a total mass of " + value + "t or more"
          }
       }
 
       class HeavyVehicleLandAchievement : NumericAchievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_HeavyVehicleLanding");
+            private static string achievement_desc;
          public HeavyVehicleLandAchievement(int mass, int prestige)
-            : base("HS:", "Heavy Vehicle Landing", mass, prestige, false)
+            : base("HS:", achievement_name, mass, prestige, false) // "Heavy Vehicle Landing"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_HeavyVehicleLanding_desc", value);
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -427,16 +457,19 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for landing a vehicle with a total mass of " + value + "t or more";
+                return achievement_desc; // "Awarded for landing a vehicle with a total mass of " + value + "t or more"
          }
       }
 
 
       class HeavyVehicleLaunchAchievement : NumericAchievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_HeavyVehicleLaunch");
+            private static string achievement_desc;
          public HeavyVehicleLaunchAchievement(int mass, int prestige)
-            : base("HL:", "Heavy Vehicle Launch", mass, prestige, false)
+            : base("HL:", achievement_name, mass, prestige, false) // "Heavy Vehicle Launch"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_HeavyVehicleLaunch_desc", value);
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -457,7 +490,7 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for launching a vehicle with a total mass of " + value + "t or more";
+                return achievement_desc; // "Awarded for launching a vehicle with a total mass of " + value + "t or more"
          }
       }
 
@@ -465,22 +498,28 @@ namespace Nereid
       /** not used yet */
       class MissionAbortedAchievement : Achievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_MissionAborted");
+            private static string achievement_desc = Localizer.Format("#FinalFrontier_Achievement_MissionAborted_desc");
          public MissionAbortedAchievement(int prestige)
-            : base("MA","Mission Aborted",prestige, false)
+            : base("MA", achievement_name, prestige, false) // "Mission Aborted"
          {
          }
 
          public override String GetDescription()
          {
-            return "Awarded for surviving a mission abort";
+            return achievement_desc; // "Awarded for surviving a mission abort"
          }
       }
 
       class InSpaceAchievement : Achievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_KerbalinSpace");
+            private static string achievement_desc = Localizer.Format("#FinalFrontier_Achievement_KerbalinSpace_desc");
+            private static string achievement_desc2;
          public InSpaceAchievement(int prestige)
-            : base("S1", "Kerbal in Space", prestige, true)
+            : base("S1", achievement_name, prestige, true) // "Kerbal in Space"
          {
+                achievement_desc2 = Localizer.Format("#FinalFrontier_Achievement_KerbalinSpace_desc2", GameUtils.GetHomeworld().bodyDisplayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -500,17 +539,19 @@ namespace Nereid
          {
             if (HasToBeFirst())
             {
-               return "Awarded for being the first kerbal in space";
+               return achievement_desc; // "Awarded for being the first kerbal in space"
             }
-				return "Awarded for leaving " + GameUtils.GetHomeworld().name + "'s atmosphere";
+            return achievement_desc2; // "Awarded for leaving " + GameUtils.GetHomeworld().name + "'s atmosphere"
          }
       }
 
       class EnteringAtmosphereAchievement : CelestialBodyAchievement
       {
+            private static string achievement_desc;
          public EnteringAtmosphereAchievement(CelestialBody body,int prestige, bool first = false)
-            : base("A", body.GetName()+" Atmosphere", body, prestige, first)
+            : base("A", Localizer.Format("#FinalFrontier_Achievement_EnteringAtmosphere", body.displayName.LocalizeRemoveGender()), body, prestige, first) // body.GetName()+" Atmosphere"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_EnteringAtmosphere_desc", FirstKerbalText(), this.body.displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -530,7 +571,7 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for" + FirstKerbalText().Envelope() + "entering the atmosphere of " + body.GetName();
+                return achievement_desc; // "Awarded for" + FirstKerbalText().Envelope() + "entering the atmosphere of " + body.GetName()
          }
 
       }
@@ -541,7 +582,7 @@ namespace Nereid
          protected CelestialBody body;
 
          public CelestialBodyAchievement(String code, String name, CelestialBody body, int prestige, bool first = false)
-            : base(code+(first?"1:":":") + body.GetName(), name, prestige, first)
+            : base(code+(first?"1:":":") + body.displayName.LocalizeRemoveGender(), name, prestige, first) // 
          {
             this.body = body;
          }
@@ -617,10 +658,12 @@ namespace Nereid
 
       class SphereOfInfluenceAchievement : CelestialBodyAchievement
       {
+            private static string achievement_desc;
 
          public SphereOfInfluenceAchievement(CelestialBody body, int prestige)
-            : base("I", body.GetName() + " Sphere of Influence", body, prestige, false)
+            : base("I", Localizer.Format("#FinalFrontier_Achievement_SphereOfInfluence", body.displayName.LocalizeRemoveGender()), body, prestige, false) // body.GetName() + " Sphere of Influence"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_SphereOfInfluence_desc", this.body.displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -633,15 +676,17 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for entering the sphere of influence of " + body.GetName();
+                return achievement_desc; // "Awarded for entering the sphere of influence of " + body.GetName()
          }
       }
 
       class LandingAchievement : CelestialBodyAchievement
       {
+            private static string achievement_desc;
          public LandingAchievement(CelestialBody body, int prestige, bool first = false)
-            : base("L", "Landing on " + body.GetName(), body, prestige, first)
+            : base("L", Localizer.Format("#FinalFrontier_Achievement_Landing", body.displayName.LocalizeRemoveGender()), body, prestige, first) // "Landing on " + body.GetName()
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_Landing_desc", FirstKerbalText(), this.body.displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -662,16 +707,18 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for" + FirstKerbalText().Envelope() + "landing on " + body.GetName();
+                return achievement_desc; // "Awarded for" + FirstKerbalText().Envelope() + "landing on " + body.GetName()
          }
       }
 
 
       class PlantFlagAchievement : CelestialBodyAchievement
       {
+            private static string achievement_desc;
          public PlantFlagAchievement(CelestialBody body, int prestige, bool first = false)
-            : base("F", "Flag on " + body.GetName(), body, prestige, first)
+            : base("F", Localizer.Format("#FinalFrontier_Achievement_PlantFlag", body.displayName.LocalizeRemoveGender()), body, prestige, first) // "Flag on " + body.GetName()
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_PlantFlag_desc", FirstKerbalText(), this.body.displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -685,17 +732,19 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for" + FirstKerbalText().Envelope() + "planting a flag on " + body.GetName();
+                return achievement_desc; // "Awarded for" + FirstKerbalText().Envelope() + "planting a flag on " + body.GetName()
          }
       }
 
       class EvaAchievement : CelestialBodyAchievement
       {
          private static readonly double NO_ATM = 0.0000001;
+            private static string achievement_desc;
 
          public EvaAchievement(CelestialBody body, int prestige, bool first = false)
-            : base("V", body.GetName() + " EVA", body, prestige, first)
+            : base("V", Localizer.Format("#FinalFrontier_Achievement_PlantEva", body.displayName.LocalizeRemoveGender()), body, prestige, first) // body.GetName() + " EVA"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_PlantEva_desc", FirstKerbalText(), this.body.displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -719,16 +768,18 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for" + FirstKerbalText().Envelope() + "on EVA in zero atmosphere around " + body.GetName();
+                return achievement_desc; // "Awarded for" + FirstKerbalText().Envelope() + "on EVA in zero atmosphere around " + body.GetName()
          }
       }
 
       class FirstEvaInSpaceAchievement : Achievement
       {
          private static readonly double NO_ATM = 0.0000001;
+         private static string achivevement_name = Localizer.Format("#FinalFrontier_Achievement_FirstEvaInSpace");
+         private static string achivevement_desc = Localizer.Format("#FinalFrontier_Achievement_FirstEvaInSpace_desc");
 
          public FirstEvaInSpaceAchievement(int prestige)
-            : base("V1", "EVA in Space", prestige, true)
+            : base("V1", achivevement_name, prestige, true) // "EVA in Space"
          {
          }
 
@@ -749,7 +800,7 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for being the first kerbal on EVA in space ";
+            return achivevement_desc; // "Awarded for being the first kerbal on EVA in space "
          }
       }
 
@@ -757,10 +808,11 @@ namespace Nereid
       class EvaOrbitAchievement : CelestialBodyAchievement
       {
          private static readonly double NO_ATM = 0.0000001;
-
+            private static string achievement_desc;
          public EvaOrbitAchievement(CelestialBody body, int prestige, bool first = false)
-            : base("E", body.GetName() + " Orbital EVA", body, prestige, first)
+            : base("E", Localizer.Format("#FinalFrontier_Achievement_EvaOrbit", body.displayName.LocalizeRemoveGender()), body, prestige, first) // body.GetName() + " Orbital EVA"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_EvaOrbit_desc", FirstKerbalText(), this.body.displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -776,16 +828,18 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for" + FirstKerbalText().Envelope() + "on EVA in a stable orbit around " + body.GetName();
+                return achievement_desc; // "Awarded for" + FirstKerbalText().Envelope() + "on EVA in a stable orbit around " + body.GetName()
          }
       }
 
 
       class EvaGroundAchievement : CelestialBodyAchievement
       {
+            private static string achievement_desc;
          public EvaGroundAchievement(CelestialBody body, int prestige, bool first = false)
-            : base("G", body.GetName()+" Surface EVA", body, prestige, first)
+            : base("G", Localizer.Format("#FinalFrontier_Achievement_EvaGround", body.displayName.LocalizeRemoveGender()), body, prestige, first) // body.GetName()+" Surface EVA"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_EvaGround_desc", FirstKerbalText(), this.body.displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -804,7 +858,7 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for" + FirstKerbalText().Envelope() + "taking footsteps on " + body.GetName();
+                return achievement_desc; // "Awarded for" + FirstKerbalText().Envelope() + "taking footsteps on " + body.GetName()
          }
       }
 
@@ -825,9 +879,11 @@ namespace Nereid
 
       class OrbitAchievement : OrbitalAchievement
       {
+            private static string achievement_desc;
          public OrbitAchievement(CelestialBody body, int prestige, bool first = false)
-            : base("O", body.GetName()+" Orbit", body, prestige, first)
+            : base("O", Localizer.Format("#FinalFrontier_Achievement_Orbit", body.displayName.LocalizeRemoveGender()), body, prestige, first) // body.GetName()+" Orbit"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_Orbit_desc", FirstKerbalText(), this.body.displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -839,16 +895,17 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for" + FirstKerbalText().Envelope() + "orbiting around " + body.GetName();
+                return achievement_desc; // "Awarded for" + FirstKerbalText().Envelope() + "orbiting around " + body.GetName()
          }
       }
 
       class RoverAchievement : CelestialBodyAchievement
       {
-
+            private static string achievement_desc;
          public RoverAchievement(CelestialBody body, int prestige, bool first = false)
-            : base("R", body.GetName() + " Rover Drive", body, prestige, first)
+            : base("R", Localizer.Format("#FinalFrontier_Achievement_Rover", body.displayName.LocalizeRemoveGender()), body, prestige, first) // body.GetName() + " Rover Drive"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_Rover_desc", FirstKerbalText(), this.body.displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -862,7 +919,7 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for" + FirstKerbalText().Envelope() + "moving a vehicle on surface of " + body.GetName();
+                return achievement_desc; // "Awarded for" + FirstKerbalText().Envelope() + "moving a vehicle on surface of " + body.GetName()
          }
       }
 
@@ -871,12 +928,15 @@ namespace Nereid
       {
          private double maxDistanceToSun;
          private CelestialBody innermost;
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_CloserSolarOrbit");
+            private static string achievement_desc;
 
          public CloserSolarOrbitAchievement(CelestialBody body, int prestige, CelestialBody innermost, bool first = false)
-            : base("CSO", "Closer Solar Orbit", body, prestige, first)
+            : base("CSO", achievement_name, body, prestige, first) // "Closer Solar Orbit"
          {
             this.innermost = innermost;
             maxDistanceToSun = innermost.orbit.PeA / 2;
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_CloserSolarOrbit_desc", FirstKerbalText(), base.body.displayName.LocalizeRemoveGender(), this.innermost.displayName.LocalizeRemoveGender(), base.body.displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -889,16 +949,18 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for" + FirstKerbalText().Envelope() + "orbiting " + base.body.GetName() + " half between periapse of " + innermost.GetName() + " and " + base.body.GetName();
+                return achievement_desc; // "Awarded for" + FirstKerbalText().Envelope() + "orbiting " + base.body.GetName() + " half between periapse of " + innermost.GetName() + " and " + base.body.GetName()
          }
       }
 
 
       class DockingAchievement : OrbitalAchievement
       {
+            private static string achievement_desc;
          public DockingAchievement(CelestialBody body, int prestige, bool first = false)
-            : base("DO", body.GetName()+" Docking", body, prestige, first)
+            : base("DO", Localizer.Format("#FinalFrontier_Achievement_Docking", body.displayName.LocalizeRemoveGender()), body, prestige, first) //  body.GetName()+" Docking"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_Docking_desc", FirstKerbalText(), this.body.displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -911,7 +973,7 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for" + FirstKerbalText().Envelope() + "docking in " + body.GetName()+" orbit";
+                return achievement_desc; // "Awarded for" + FirstKerbalText().Envelope() + "docking in " + body.GetName()+" orbit"
          }
       }
 
@@ -948,9 +1010,11 @@ namespace Nereid
 
       class SolidFuelLaunchAchievement : NumericAchievement
       {
+            private static string achievement_desc;
          public SolidFuelLaunchAchievement(int value, int prestige)
-            : base("B", value+"%"+" Solid Fuel Booster ", value, prestige, false)
+            : base("B", Localizer.Format("#FinalFrontier_Achievement_SolidFuelLaunch", value), value, prestige, false) // value+"%"+" Solid Fuel Booster "
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_SolidFuelLaunch_desc", this.value);
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current) 
@@ -981,16 +1045,18 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for launching with solid fuel booster at "+value+"% of ship mass";
+                return achievement_desc; // "Awarded for launching with solid fuel booster at "+value+"% of ship mass"
          }
 
       }
 
       class HighGeeForceAchievement : NumericAchievement
       {
+            private static string achievement_desc;
          public HighGeeForceAchievement(int value, int prestige)
-            : base("H", "G-Force " + Utils.Roman(value), value, prestige, false)
+            : base("H", Localizer.Format("#FinalFrontier_Achievement_HighGeeForce", Utils.Roman(value)), value, prestige, false) // "G-Force " + Utils.Roman(value)
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_HighGeeForce_desc", this.value, GeeForceInspector.DURATION.ToString("0.0"));
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -1007,16 +1073,18 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for withstanding an acceleration of at least " + value + "g for " + GeeForceInspector.DURATION.ToString("0.0") + " or more seconds";
+                return achievement_desc; // "Awarded for withstanding an acceleration of at least " + value + "g for " + GeeForceInspector.DURATION.ToString("0.0") + " or more seconds"
          }
       }
 
       class MachNumberAchievement : NumericAchievement
       {
+            private static string achievement_desc;
          private static double MAX_ALTITUDE = 30000;
          public MachNumberAchievement(int value, int prestige)
-            : base("M", "Mach " + Utils.Roman(value), value, prestige, false)
+            : base("M", Localizer.Format("#FinalFrontier_Achievement_MachNumber", Utils.Roman(value)), value, prestige, false) // "Mach " + Utils.Roman(value)
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_MachNumber_desc", this.value, MAX_ALTITUDE.ToString("0"), GameUtils.GetHomeworld().displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -1033,22 +1101,23 @@ namespace Nereid
             if (current.Origin.altitude >= MAX_ALTITUDE) return false;
             double mach = current.Origin.MachNumberHorizontal();
             if (mach < value) return false;
-				if (!current.Origin.mainBody.isHomeWorld ) return false;
+                if (!current.Origin.mainBody.isHomeWorld ) return false;
             return true;
          }
 
          public override String GetDescription()
          {
-            return "Awarded for flying horizontally at mach " + value + " below "+MAX_ALTITUDE.ToString("0")+"m in " + GameUtils.GetHomeworld().name + "'s atmosphere";
+                return achievement_desc; // "Awarded for flying horizontally at mach " + value + " below "+MAX_ALTITUDE.ToString("0")+"m in " + GameUtils.GetHomeworld().name + "'s atmosphere"
          }
       }
 
       class DeepAtmosphereArchievement : CelestialBodyAchievement
       {
-
+            private static string achievement_desc;
          public DeepAtmosphereArchievement(CelestialBody body, int prestige)
-            : base("DA",body.GetName() + " Deep Atmosphere",body, prestige, false)
+            : base("DA", Localizer.Format("#FinalFrontier_Achievement_DeepAtmosphere", body.displayName.LocalizeRemoveGender()),body, prestige, false) // body.GetName() + " Deep Atmosphere"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_DeepAtmosphere_desc", this.body.displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -1060,39 +1129,43 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for entering the deeper atmosphere of " + body.GetName();
+                return achievement_desc; // "Awarded for entering the deeper atmosphere of " + body.GetName()
          }
       }
 
       class GrandTourAchievement : Achievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_GrandTour");
+            private static string achievement_desc;
          public GrandTourAchievement(int prestige, bool first)
-            : base("GT" + (first ? "1" : ""), "Grand Tour", prestige, first)
+            : base("GT" + (first ? "1" : ""), achievement_name, prestige, first) // "Grand Tour"
          {
-
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_GrandTour_desc", FirstKerbalText());
          }
 
          // this class has no check methods, because the ribbon will be awarded directly
 
          public override String GetDescription()
          {
-            return "Awarded for" + FirstKerbalText().Envelope() + "entering the sphere of influence of all celestial bodies in the kerbal system";
+                return achievement_desc; // "Awarded for" + FirstKerbalText().Envelope() + "entering the sphere of influence of all celestial bodies in the kerbal system"
          }
       } 
 
       class JoolTourAchievement : Achievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_JoolTour");
+            private static string achievement_desc;
          public JoolTourAchievement(int prestige, bool first)
-            : base("JT" + (first ? "1" : ""), "Jool Tour", prestige, first)
+            : base("JT" + (first ? "1" : ""), achievement_name, prestige, first) // "Jool Tour"
          {
-
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_JoolTour_desc", FirstKerbalText());
          }
 
          // this class has no check methods, because the ribbon will be awarded directly
 
          public override String GetDescription()
          {
-            return "Awarded for" + FirstKerbalText().Envelope() + "entering the sphere of influence of all moons of Jool";
+                return achievement_desc; // "Awarded for" + FirstKerbalText().Envelope() + "entering the sphere of influence of all moons of Jool"
          }
       }
 
@@ -1101,9 +1174,12 @@ namespace Nereid
          CelestialBody kerbol;
          CelestialBody outermostBodyInSystem;
          private readonly double minDistance;
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_DeepSpace");
+            private static string achievement_desc = Localizer.Format("#FinalFrontier_Achievement_DeepSpace_desc");
+            private static string achievement_desc2;
 
          public DeepSpaceAchievement(int prestige, bool first)
-            : base("DS" + (first ? "1" : ""), "Deep Space", prestige, first)
+            : base("DS" + (first ? "1" : ""), achievement_name, prestige, first) // "Deep Space"
          {
             kerbol = GameUtils.GetSun();
             outermostBodyInSystem = GameUtils.GetOutermostPlanet();
@@ -1118,6 +1194,7 @@ namespace Nereid
                minDistance = 0;
                Log.Warning("no outermost planet foundfor deep space ribbon");
             }
+            achievement_desc2 = Localizer.Format("#FinalFrontier_Achievement_DeepSpace_desc2", FirstKerbalText(), outermostBodyInSystem.displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -1136,16 +1213,19 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            if (outermostBodyInSystem == null) return "no outermost planet found in system (ribbon not used)";
-            return "Awarded for" + FirstKerbalText().Envelope() + "in space beyond the sphere of influence of " + outermostBodyInSystem.name;
+            if (outermostBodyInSystem == null) return achievement_desc; // "no outermost planet found in system (ribbon not used)"
+                return achievement_desc2; // "Awarded for" + FirstKerbalText().Envelope() + "in space beyond the sphere of influence of " + outermostBodyInSystem.name
          }
       }
 
       class ContractsAchievement : NumericAchievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_MultipleContracts");
+            private static string achievement_desc;
          public ContractsAchievement(int value, int prestige)
-            : base("N", "Multiple Contracts", value, prestige, false)
+            : base("N", achievement_name, value, prestige, false) // "Multiple Contracts"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_MultipleContracts_desc", this.value);
          }
 
          protected override bool CheckEntry(HallOfFameEntry entry) 
@@ -1157,15 +1237,17 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for completing "+value +" or more contracts";
+                return achievement_desc; // "Awarded for completing "+value +" or more contracts"
          }
       }
 
       class ResearchAchievement : NumericAchievement
       {
+            private static string achievement_desc;
          public ResearchAchievement(int nr, int value, int prestige)
-            : base("YR", "Research "+Utils.Roman(nr), value, prestige, false)
+            : base("YR", Localizer.Format("#FinalFrontier_Achievement_Research", Utils.Roman(nr)), value, prestige, false) // "Research "+Utils.Roman(nr)
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_Research_desc", this.value);
          }
 
          protected override bool CheckEntry(HallOfFameEntry entry)
@@ -1177,7 +1259,7 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for researching " + value + " or more science points";
+                return achievement_desc; // "Awarded for researching " + value + " or more science points"
          }
       }
 
@@ -1204,40 +1286,46 @@ namespace Nereid
 
       class ScientistServiceAchievement : ServiceAchievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_ScientificService");
+            private static string achievement_desc = Localizer.Format("#FinalFrontier_Achievement_ScientificService_desc");
          public ScientistServiceAchievement(int prestige)
-            : base("Scientist","QS", "Scientific Service", prestige)
+            : base("Scientist","QS", achievement_name, prestige) // "Scientific Service"
          {
          }
 
          public override String GetDescription()
          {
-            return "Awarded to any kerbal completing at least a single mission as a scientist";
+            return achievement_desc; // "Awarded to any kerbal completing at least a single mission as a scientist"
          }
       }
 
       class EngineerServiceAchievement : ServiceAchievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_EngineerService");
+            private static string achievement_desc = Localizer.Format("#FinalFrontier_Achievement_EngineerService_desc");
          public EngineerServiceAchievement(int prestige)
-            : base("Engineer", "QE", "Engineer Service", prestige)
+            : base("Engineer", "QE", achievement_name, prestige) // "Engineer Service"
          {
          }
 
          public override String GetDescription()
          {
-            return "Awarded to any kerbal completing at least a single mission as an engineer";
+            return achievement_desc; // "Awarded to any kerbal completing at least a single mission as an engineer"
          }
       }
 
       class PilotServiceAchievement : ServiceAchievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_PilotService");
+            private static string achievement_desc = Localizer.Format("#FinalFrontier_Achievement_PilotService_desc");
          public PilotServiceAchievement(int prestige)
-            : base("Pilot", "QO", "Operational Service", prestige)
+            : base("Pilot", "QO", achievement_name, prestige) // "Operational Service"
          {
          }
 
          public override String GetDescription()
          {
-            return "Awarded to any kerbal completing at least a single mission as a pilot";
+            return achievement_desc; // "Awarded to any kerbal completing at least a single mission as a pilot"
          }
       }
 
@@ -1245,9 +1333,11 @@ namespace Nereid
       {
          private static readonly DateTime FirstTimeOfDuty = new DateTime(2014,12,24);
          private static readonly DateTime LastTimeOfDuty = new DateTime(2014,12,27);
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_XMas2014");
+            private static string achievement_desc = Localizer.Format("#FinalFrontier_Achievement_XMas2014_desc");
 
          public XMas2014Achievement(int prestige)
-            : base("X14", "X-mas 2014", prestige, false )
+            : base("X14", achievement_name, prestige, false ) // "X-mas 2014"
          {
          }
 
@@ -1280,7 +1370,7 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for any kind of duty on xmas 2014";
+            return achievement_desc; // "Awarded for any kind of duty on xmas 2014"
          }
       }
 
@@ -1338,9 +1428,11 @@ namespace Nereid
 
       class EvaInHomeWatersAchievement : Achievement
       {
+            private static string achievement_desc;
          public EvaInHomeWatersAchievement(int prestige)
-            : base("WE", "EVA in " + GameUtils.GetHomeworld().name + "'s waters", prestige, false)
+            : base("WE", Localizer.Format("#FinalFrontier_Achievement_EvaInHomeWaters", GameUtils.GetHomeworld().displayName.LocalizeRemoveGender()), prestige, false) // "EVA in " + GameUtils.GetHomeworld().name + "'s waters"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_EvaInHomeWaters_desc", GameUtils.GetHomeworld().displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -1355,14 +1447,16 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for any EVA in " + GameUtils.GetHomeworld().name + "'s waters";
+                return achievement_desc; // "Awarded for any EVA in " + GameUtils.GetHomeworld().name + "'s waters"
          }
       }
 
       class CollisionAchievement : Achievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_Collision");
+            private static string achievement_desc = Localizer.Format("#FinalFrontier_Achievement_Collision_desc");
          public CollisionAchievement(int prestige)
-            : base("C", "Collision", prestige, false)
+            : base("C", achievement_name, prestige, false) // "Collision"
          {
          }
 
@@ -1381,16 +1475,18 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for any collision while in a vessel";
+            return achievement_desc; // "Awarded for any collision while in a vessel"
          }
       }
 
       class WetEvaAchievement : Achievement
       {
-
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_WetEVA");
+            private static string achievement_desc;
          public WetEvaAchievement(int prestige, bool first = false)
-            : base("EE"+(first?"1":""), "Wet EVA", prestige, first)
+            : base("EE"+(first?"1":""), achievement_name, prestige, first) // "Wet EVA"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_WetEVA_desc", FirstKerbalText() + (HasToBeFirst() ? "on " : ""), GameUtils.GetHomeworld().displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -1408,15 +1504,17 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for" + FirstKerbalText().Envelope() + (HasToBeFirst() ? "on " : "") + "EVA in a wet environment outside of " + GameUtils.GetHomeworld().name;
+                return achievement_desc; // "Awarded for" + FirstKerbalText().Envelope() + (HasToBeFirst() ? "on " : "") + "EVA in a wet environment outside of " + GameUtils.GetHomeworld().name
          }
       }
 
 
       class AltitudeRecordAchievement : Achievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_AltitudeRecord");
+            private static string achievement_desc = Localizer.Format("#FinalFrontier_Achievement_AltitudeRecord_desc");
          public AltitudeRecordAchievement(int prestige)
-            : base("RA", "Altitude Record", prestige, false)
+            : base("RA", achievement_name, prestige, false) // "Altitude Record"
          {
          }
 
@@ -1431,14 +1529,16 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for any altitude record above 1000m";
+            return achievement_desc; // "Awarded for any altitude record above 1000m"
          }
       }
 
       class DepthRecordAchievement : Achievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_DepthRecord");
+            private static string achievement_desc = Localizer.Format("#FinalFrontier_Achievement_DepthRecord_desc");
          public DepthRecordAchievement(int prestige)
-            : base("RU", "Depth Record", prestige, false)
+            : base("RU", achievement_name, prestige, false) // "Depth Record"
          {
          }
 
@@ -1453,17 +1553,20 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for any depth record";
+            return achievement_desc; // "Awarded for any depth record"
          }
       }
 
       class DistanceRecordAchievement : Achievement
       {
          private const double MIN_DISTANCE = 10000;
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_DistanceRecord");
+            private static string achievement_desc;
 
          public DistanceRecordAchievement(int prestige)
-            : base("RD", "Distance Record", prestige, false)
+            : base("RD", achievement_name, prestige, false) // "Distance Record"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_DistanceRecord_desc", MIN_DISTANCE/1000);
          }
 
          protected override bool CheckProgress(ProgressNode node)
@@ -1477,17 +1580,20 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for any distance record greater than " + MIN_DISTANCE/1000 + " km";
+                return achievement_desc; // "Awarded for any distance record greater than " + MIN_DISTANCE/1000 + " km"
          }
       }
 
       class SpeedRecordAchievement : Achievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_SpeedRecord");
+            private static string achievement_desc;
          private const double MIN_SPEED = 100;
 
          public SpeedRecordAchievement(int prestige)
-            : base("RS", "Speed Record", prestige, false)
+            : base("RS", achievement_name, prestige, false) // "Speed Record"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_SpeedRecord_desc", MIN_SPEED);
          }
 
          protected override bool CheckProgress(ProgressNode node)
@@ -1502,15 +1608,17 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for any speed record greater than " + MIN_SPEED +" m/s";
+                return achievement_desc; // "Awarded for any speed record greater than " + MIN_SPEED +" m/s"
          }
       }
 
       class PassengerTransportAchievement : NumericAchievement
       {
+            private static string achievement_desc;
          public PassengerTransportAchievement(int value, int prestige)
-            : base("P", "Passenger Transport " + Utils.Roman(value), value, prestige, false)
+            : base("P", Localizer.Format("#FinalFrontier_Achievement_PassengerTransport", Utils.Roman(value)), value, prestige, false) // "Passenger Transport " + Utils.Roman(value)
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_PassengerTransport_desc", value);
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -1538,18 +1646,19 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded to kerbals launching a vessel containing at least " + value + " tourists";
+                return achievement_desc; // "Awarded to kerbals launching a vessel containing at least " + value + " tourists"
          }
       }
 
       class ContractPrestigeAchievement : Achievement
       {
          private readonly Contract.ContractPrestige cPrestige;
-
+            private static string achievement_desc;
          public ContractPrestigeAchievement(Contract.ContractPrestige cPrestige, int prestige)
-            : base("CP" + (int)cPrestige, cPrestige + " Contract", prestige, false)
+            : base("CP" + (int)cPrestige, Localizer.Format("#FinalFrontier_Achievement_ContractPrestige", cPrestige), prestige, false) //  cPrestige + " Contract"
          {
             this.cPrestige = cPrestige;
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_ContractPrestige_desc", this.cPrestige.ToString().ToLower());
          }
 
          protected override bool CheckContract(Contract contract) 
@@ -1562,15 +1671,17 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for completing any " + cPrestige.ToString().ToLower()+" contract";
+                return achievement_desc; // "Awarded for completing any " + cPrestige.ToString().ToLower()+" contract"
          }
       }
 
       // NOT WORKING
       class LostAndFoundAchievement : Achievement
       {
+            private static string achievement_name = Localizer.Format("#FinalFrontier_Achievement_LostAndFound");
+            private static string achievement_desc = Localizer.Format("#FinalFrontier_Achievement_LostAndFound_desc");
          public LostAndFoundAchievement(int prestige)
-            : base("LF", "Lost And Found", prestige, false)
+            : base("LF", achievement_name, prestige, false) // "Lost And Found"
          {
          }
 
@@ -1583,15 +1694,17 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded to any lost kerbal for returning to active duty";
+            return achievement_desc; // "Awarded to any lost kerbal for returning to active duty"
          }
       }
 
       class MountainLandingAchievement : NumericAchievement
       {
+            private static string achievement_desc;
          public MountainLandingAchievement(int value, int prestige)
-            : base("ML:", value+"m Mountain Lander", value, prestige, false)
+            : base("ML:", Localizer.Format("#FinalFrontier_Achievement_MountainLanding", value), value, prestige, false) // value+"m Mountain Lander"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_MountainLanding_desc", GameUtils.GetHomeworld().displayName.LocalizeRemoveGender(), value);
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -1615,15 +1728,17 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for landing a vessel on " + GameUtils.GetHomeworld().name + " at an elevation of at least " + value + "m";
+                return achievement_desc; //"Awarded for landing a vessel on " + GameUtils.GetHomeworld().name + " at an elevation of at least " + value + "m" 
          }
       }
 
       class NoFuelLandingAchievement : NumericAchievement
       {
+            private static string achievement_desc;
          public NoFuelLandingAchievement(int value, int prestige)
-            : base("FL:", value + "% Fuel Landing", value, prestige, false)
+            : base("FL:", Localizer.Format("#FinalFrontier_Achievement_NoFuelLanding", value), value, prestige, false) // value + "% Fuel Landing"
          {
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_NoFuelLanding_desc", this.value);
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -1655,7 +1770,7 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for landing a vessel with " + value + "% or less liquid fuel left and no deployed parachutes";
+                return achievement_desc; // "Awarded for landing a vessel with " + value + "% or less liquid fuel left and no deployed parachutes"
          }
       }
 
@@ -1663,13 +1778,14 @@ namespace Nereid
       class PolarLandingAchievement : Achievement
       {
          private const double POLAR_LATITUDE = 66;
-
+            private static string achievement_desc;
          private String hemisphere;
 
          public PolarLandingAchievement(String hemisphere, int prestige, bool first)
-            : base("P" + hemisphere.Substring(0, 1).ToUpper() + (first ? "1" : ""), hemisphere + " Polar Lander", prestige, first)
+            : base("P" + hemisphere.Substring(0, 1).ToUpper() + (first ? "1" : ""), Localizer.Format("#FinalFrontier_Achievement_PolarLanding", hemisphere), prestige, first) // hemisphere + " Polar Lander"
          {
             this.hemisphere = hemisphere.ToLower();
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_PolarLanding_desc", FirstKerbalText(), this.hemisphere.ToLower(), GameUtils.GetHomeworld().displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -1700,7 +1816,7 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for "+ FirstKerbalText().Envelope() + "landing in the "+hemisphere.ToLower()+" polar region of " + GameUtils.GetHomeworld().name;
+                return achievement_desc; // "Awarded for "+ FirstKerbalText().Envelope() + "landing in the "+hemisphere.ToLower()+" polar region of " + GameUtils.GetHomeworld().name
          }
       }
 
@@ -1709,13 +1825,15 @@ namespace Nereid
          CelestialBody homeworld;
          private double gravity;
          private double percent;
+            private static string achievement_desc;
 
          public LowGravityLandingAchievement(double percentOfKerbinGravity, int prestige)
-            : base("G:"+ percentOfKerbinGravity.ToString("0"), "Low Gravity Landing "+ percentOfKerbinGravity.ToString("0")+"%", prestige, false)
+            : base("G:"+ percentOfKerbinGravity.ToString("0"), Localizer.Format("#FinalFrontier_Achievement_LowGravityLanding", percentOfKerbinGravity.ToString("0")), prestige, false) // "Low Gravity Landing "+ percentOfKerbinGravity.ToString("0")+"%"
          {
             homeworld = GameUtils.GetHomeworld();
             gravity = homeworld.GeeASL * percentOfKerbinGravity / 100.0;
             percent = percentOfKerbinGravity;
+                achievement_desc = Localizer.Format("#FinalFrontier_Achievement_LowGravityLanding_desc", percent.ToString("0"), homeworld.displayName.LocalizeRemoveGender());
          }
 
          protected override bool CheckVesselState(VesselState previous, VesselState current)
@@ -1739,7 +1857,7 @@ namespace Nereid
 
          public override String GetDescription()
          {
-            return "Awarded for landing in a gravity field of less than " + percent.ToString("0") + " percent of "+homeworld.name;
+                return achievement_desc; // "Awarded for landing in a gravity field of less than " + percent.ToString("0") + " percent of "+homeworld.name
          }
       }
 

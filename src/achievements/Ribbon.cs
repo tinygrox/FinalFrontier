@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using KSP.IO;
+using KSP.Localization;
 
 namespace Nereid
 {
@@ -15,6 +16,7 @@ namespace Nereid
          private readonly Achievement achievement;
          // ribbon that has to be superseded if any
          private readonly Ribbon supersede;
+         private static string FinalFrontier_Ribbon = Localizer.Format("#FinalFrontier_Ribbon");
 
          // ribbon enabled?
          public bool enabled = true;
@@ -36,7 +38,7 @@ namespace Nereid
             }
          }
 
-         public int GetWidth()
+            public int GetWidth()
          {
             return WIDTH;
          }
@@ -92,7 +94,7 @@ namespace Nereid
 
          public String GetName()
          {
-            return achievement.GetName() + " Ribbon";
+                return achievement.GetName() + FinalFrontier_Ribbon;
          }
 
          public override String ToString()
