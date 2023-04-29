@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using KSP.Localization;
 
 
 namespace Nereid
@@ -54,7 +55,8 @@ namespace Nereid
 
       public class BoardingAction : Action
       {
-         public BoardingAction() : base("B+", "Kerbal Boarding Vessel") { }
+            private static string Action_name = Localizer.Format("#FinalFrontier_Action_Boarding");
+         public BoardingAction() : base("B+", Action_name) { } // "Kerbal Boarding Vessel"
 
          public override bool DoAction(double timeOfAction, HallOfFameEntry entry, String data = "")
          {
@@ -106,13 +108,14 @@ namespace Nereid
 
          public override string CreateLogBookEntry(LogbookEntry entry)
          {
-            return entry.Name + " returns from EVA";
+            return Localizer.Format("#FinalFrontier_Action_Boarding_Log", entry.Name); // entry.Name + " returns from EVA"
          }  
       }
 
       public class DockingAction : Action
       {
-         public DockingAction() : base("D+", "Vessel docked") { }
+            private static string action_name = Localizer.Format("#FinalFrontier_Action_Docking");
+         public DockingAction() : base("D+", action_name) { } // "Vessel docked"
 
          public override bool DoAction(double timeOfAction, HallOfFameEntry entry, String data = "")
          {
@@ -122,13 +125,14 @@ namespace Nereid
 
          public override string CreateLogBookEntry(LogbookEntry entry)
          {
-            return entry.Name + " has docked on another spacecraft";
+            return Localizer.Format("#FinalFrontier_Action_Docking_Log", entry.Name); // entry.Name + " has docked on another spacecraft"
          }   
       }
 
       public class LaunchAction : Action
       {
-         public LaunchAction() : base("L+", "Launching Vessel") { }
+            private static string action_name = Localizer.Format("#FinalFrontier_Action_Launch");
+         public LaunchAction() : base("L+", action_name) { } //  "Launching Vessel"
 
          public override bool DoAction(double timeOfAction, HallOfFameEntry entry, String data = "")
          {
@@ -138,13 +142,14 @@ namespace Nereid
 
          public override string CreateLogBookEntry(LogbookEntry entry)
          {
-            return entry.Name + " launched a mission";
+            return Localizer.Format("#FinalFrontier_Action_Launch_Log", entry.Name); // entry.Name + " launched a mission"
          }
       }
 
       public class RecoverAction : Action
       {
-         public RecoverAction() : base("M+", "Vessel recovered") { }
+            private static string action_name = Localizer.Format("#FinalFrontier_Action_Recover");
+         public RecoverAction() : base("M+", action_name) { } // "Vessel recovered"
 
          public override bool DoAction(double timeOfAction, HallOfFameEntry entry, String data = "")
          {
@@ -176,7 +181,7 @@ namespace Nereid
 
          public override string CreateLogBookEntry(LogbookEntry entry)
          {
-            return entry.Name + " has returned from a mission";
+            return Localizer.Format("#FinalFrontier_Action_Recover_Log", entry.Name); // entry.Name + " has returned from a mission"
          }
       }
 
@@ -189,7 +194,8 @@ namespace Nereid
 
       public class EvaNoAtmosphereAction : EvaAction
       {
-         public EvaNoAtmosphereAction() : base("E+", "Kerbal on Eva in zero atmosphere") { }
+            private static string action_name = Localizer.Format("#FinalFrontier_Action_EvaNoAtmosphere");
+         public EvaNoAtmosphereAction() : base("E+", action_name) { } // "Kerbal on Eva in zero atmosphere"
 
          public override bool DoAction(double timeOfAction, HallOfFameEntry entry, String data = "")
          {
@@ -199,7 +205,7 @@ namespace Nereid
 
          public override string CreateLogBookEntry(LogbookEntry entry)
          {
-            return entry.Name + " begins EVA in zero atmosphere";
+            return Localizer.Format("#FinalFrontier_Action_EvaNoAtmosphere_Log", entry.Name); // entry.Name + " begins EVA in zero atmosphere"
          }
 
          public override void OnBoardingVessel(double timeOfAction, HallOfFameEntry entry)
@@ -214,7 +220,8 @@ namespace Nereid
 
       public class EvaWithOxygen : EvaAction
       {
-         public EvaWithOxygen() : base("EX+", "Kerbal on Eva in atmosphere with oxygen") { }
+            private static string action_name = Localizer.Format("#FinalFrontier_Action_EvaWithOxygen");
+         public EvaWithOxygen() : base("EX+", action_name) { } // "Kerbal on Eva in atmosphere with oxygen"
 
          public override bool DoAction(double timeOfAction, HallOfFameEntry entry, String data = "")
          {
@@ -224,7 +231,7 @@ namespace Nereid
 
          public override string CreateLogBookEntry(LogbookEntry entry)
          {
-            return entry.Name + " begins EVA in atmosphere";
+            return Localizer.Format("#FinalFrontier_Action_EvaWithOxygen_Log", entry.Name); // entry.Name + " begins EVA in atmosphere"
          }
 
          public override void OnBoardingVessel(double timeOfAction, HallOfFameEntry entry)
@@ -236,7 +243,8 @@ namespace Nereid
 
       public class EvaInAtmosphereAction : EvaAction
       {
-         public EvaInAtmosphereAction() : base("EA+", "Kerbal on Eva in toxic atmosphere without oxygen") { }
+            private static string action_name = Localizer.Format("#FinalFrontier_Action_EvaInAtmosphere");
+         public EvaInAtmosphereAction() : base("EA+", action_name) { } // "Kerbal on Eva in toxic atmosphere without oxygen"
 
          public override bool DoAction(double timeOfAction, HallOfFameEntry entry, String data = "")
          {
@@ -246,7 +254,7 @@ namespace Nereid
 
          public override string CreateLogBookEntry(LogbookEntry entry)
          {
-            return entry.Name + " begins EVA in toxic atmosphere";
+            return Localizer.Format("#FinalFrontier_Action_EvaInAtmosphere_Log", entry.Name); // entry.Name + " begins EVA in toxic atmosphere"
          }
 
          public override void OnBoardingVessel(double timeOfAction, HallOfFameEntry entry)
@@ -258,11 +266,12 @@ namespace Nereid
 
       public class ContractAction : Action
       {
-         public ContractAction() : base("C+", "Contract completed") { }
+            private static string action_name = Localizer.Format("#FinalFrontier_Action_Contract");
+         public ContractAction() : base("C+", action_name) { } // "Contract completed"
 
          public override string CreateLogBookEntry(LogbookEntry entry)
          {
-            return entry.Name + " has completed a contract";
+            return Localizer.Format("#FinalFrontier_Action_Contract_Log", entry.Name); // entry.Name + " has completed a contract"
          }
 
          public override bool DoAction(double timeOfAction, HallOfFameEntry entry, String data = "")
@@ -274,8 +283,9 @@ namespace Nereid
 
       public class ScienceAction : Action
       {
+            private static string action_name = Localizer.Format("#FinalFrontier_Action_Science");
          public ScienceAction()
-            : base(Action.CODE_SCIENCE, "Science")
+            : base(Action.CODE_SCIENCE, action_name) // "Science"
          {
          }
 
@@ -298,11 +308,11 @@ namespace Nereid
             try
             {
                double science = Double.Parse(entry.Data);
-               return entry.Name + " has researched " + science.ToString("0.0") + " science points";
+               return Localizer.Format("#FinalFrontier_Action_Science_desc", entry.Name, science.ToString("0.0")); // entry.Name + " has researched " + science.ToString("0.0") + " science points"
             }
             catch
             {
-               return entry.Name + " has researched an unknown amount of science points";
+               return Localizer.Format("#FinalFrontier_Action_Science_desc2", entry.Name); // entry.Name + " has researched an unknown amount of science points"
             }
          }
       }
